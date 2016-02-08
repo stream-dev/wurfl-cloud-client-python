@@ -53,6 +53,7 @@ TEST_DATA = [
     TestData(None, HEADERS, u'generic_web_browser', API_VERSION, 1452529268, True, False, {}),
 ]
 
+
 class DeviceMock(object):
     def __init__(self, apiVersion, mtime, id, device_claims_web_support, is_wireless_device, errors):
         self.apiVersion = apiVersion
@@ -141,7 +142,7 @@ class TestCloudCoverage():
         cloud = Cloud(self.wurfl_config, NullCache())
         url = u'http://api.wurflcloud.com/v1/json/search:(device_claims_web_support,is_wireless_device)'
         for data in TEST_DATA:
-            configure_wurflcloud_mock(mock,  data.user_agent, DeviceMock.get_device( data).to_json(), url, 200)
+            configure_wurflcloud_mock(mock,  data.user_agent, DeviceMock.get_device(data).to_json(), url, 200)
 
             cloud(
                 data.user_agent,
