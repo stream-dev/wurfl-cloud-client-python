@@ -2,3 +2,5 @@ requests
 pylibmc
 nose
 sqlitedict
+future
+six

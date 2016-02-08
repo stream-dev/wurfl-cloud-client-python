@@ -1,0 +1,17 @@
+{
+    "api": {
+        "version": "v1",
+        "key": "username:password_to_WURFL_CLOUD",
+        "server": "api.wurflcloud.com"
+    },
+    "http": {
+        "timeout": 1000,
+        "compression": true
+    },
+    "cache": {
+       "type": "NONE"
+    },
+    "misc": {
+        "report_interval": 60
+    }
+}

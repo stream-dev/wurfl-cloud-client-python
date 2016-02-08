@@ -3,6 +3,7 @@ import time
 import logging
 
 from sqlitedict import SqliteDict
+from six import text_type
 
 from wurfl_cloud.cache.interface import CacheInterface
 
@@ -21,7 +22,6 @@ __license__ = """
 
 logger = logging.getLogger("wurfl_cloud.cache.file")
 
-
 class FileCache(CacheInterface):
     def __init__(self, config):
         CacheInterface.__init__(self, config)
@@ -35,10 +35,10 @@ class FileCache(CacheInterface):
         atexit.register(closer)
 
     def get(self, key):
-        if int(self.db[key + "_expiration"]) - time.time() <= 0:
+        if int(self.db[key + text_type("_expiration")]) - time.time() <= 0:
             raise KeyError("cache key expired")
         return self.db[key]
 
     def set(self, key, val):
         self.db[key] = val
-        self.db[key + "_expiration"] = str(int(time.time()) + self.expiration)
+        self.db[key + text_type("_expiration")] = str(int(time.time()) + self.expiration)

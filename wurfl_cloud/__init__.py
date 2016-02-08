@@ -1,6 +1,8 @@
 import sys
 import json
 import logging
+from six import iteritems
+from future.utils import raise_
 
 import requests
 from requests.exceptions import RequestException
@@ -146,7 +148,7 @@ class Cloud(object):
                     k, v = cloud_stat.split(":")
                     self.cache.set("wurfl_cloud_%s" % k, v)
             trace = sys.exc_info()[2]
-            raise LookupError(exc.args), None, trace
+            raise_(LookupError, exc.args, trace)
 
         if cloud_data.status_code != 200:
             raise LookupError(cloud_data.content, cloud_data.status_code)
@@ -162,7 +164,7 @@ class Cloud(object):
         @param cloud_data: The raw return value from the cloud server
         @type cloud_data: JSON
         """
-        device = json.loads(cloud_data.content)
+        device = json.loads(cloud_data.content.decode())
         self.cache.set_device(user_agent, device)
         return device
 
@@ -181,7 +183,7 @@ class Cloud(object):
         report_interval = 60
         if report_interval > 0 and self.cache.age >= report_interval:
             counter_data = []
-            for k, v in self.cache.stats.iteritems():
+            for k, v in iteritems(self.cache.stats):
                 counter_data.append("%s:%s" % (k, v))
             headers['X-Cloud-Counters'] = ','.join(counter_data)
             self.cache.reset_stats()

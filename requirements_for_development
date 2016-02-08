@@ -1,0 +1,3 @@
+coverage
+requests_mock
+tox

@@ -1,6 +1,9 @@
 import json
 import time
 
+from six import text_type
+from past.builtins import basestring
+
 from wurfl_cloud import update_device
 
 __license__ = """
@@ -21,9 +24,9 @@ class CacheInterface(object):
         self.config = config
 
     def _from_backend(self, key):
-        key = key.encode("utf8")
+        key = text_type(key)
         try:
-            data = self.get(key).decode("utf8")
+            data = text_type(self.get(key))
             try:
                 data = json.loads(data)
             except ValueError:
@@ -54,13 +57,13 @@ class CacheInterface(object):
         return device
 
     def set_device(self, user_agent, device):
-        user_agent = user_agent.encode("utf8")
+        user_agent = text_type(user_agent)
         device = device.copy()
         device["errors"] = {}
         old_device = self.get_device(user_agent, do_stats=False)
         if old_device:
             device = update_device(old_device, device)
-        wurfl_id = device[u"id"].encode("utf8")
+        wurfl_id = text_type(device[u"id"])
         self.set(user_agent, wurfl_id)
         self.set(wurfl_id, json.dumps(device))
         self.set_mtime(device['mtime'])
@@ -68,11 +71,10 @@ class CacheInterface(object):
     def set_device_from_id(self, wurfl_id, device):
         device = device.copy()
         device["errors"] = {}
-        wurfl_id = wurfl_id.encode("utf8")
         old_device = self.get_device_from_id(wurfl_id, do_stats=False)
         if old_device:
             device = update_device(old_device, device)
-        self.set(wurfl_id, json.dumps(device))
+        self.set(text_type(wurfl_id), json.dumps(device))
 
     def _incr(self, val):
         try:
